@@ -22,5 +22,6 @@ jobs:
           gh release create "${TAG}" --draft \
             --title "Automatic Release" \
             --target "${GITHUB_SHA}" \
+            --repo ${{ github.repository }} \
             Xcode_11.7-toolchain.tar.xz \
             Xcode_11.7-sdk-iphone.tar.xz
