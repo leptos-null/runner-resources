@@ -1,0 +1,26 @@
+name: Xcode Resources
+
+on:
+  push
+
+jobs:
+  res:
+    runs-on: macos-11
+    # needed to be able to create a Release
+    permissions:
+      contents: write
+    steps:
+      - run: |
+          tar -cJf "Xcode_11.7-toolchain.tar.xz" \
+            /Applications/Xcode_11.7.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain
+          tar -cJf "Xcode_11.7-sdk-iphone.tar.xz" \
+            /Applications/Xcode_11.7.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="auto-${GITHUB_SHA:0:7}"
+          gh release create "${TAG}" --draft \
+            --title "Automatic Release" \
+            --target "${GITHUB_SHA}" \
+            Xcode_11.7-toolchain.tar.xz \
+            Xcode_11.7-sdk-iphone.tar.xz
